@@ -1,0 +1,74 @@
+<!--
+   index.html
+   Author:
+   Author URI: https://
+   Author Github URI: https://www.github.com/
+   Project Repository URI: https://github.com/
+   Description: The main UI for your Chrome Extension
+   License: MIT
+-->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>DistractMeNot Chrome Extension</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <script src="contentScripts.js"></script>
+    <div style="display: flex; height: 100%; position: relative;">
+      <div>
+        <h3>HKU Gym Booker</h3>
+        <form id="user_data">
+          <div>Name:</div>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="user_input"
+            required
+          />
+          <div>Email:</div>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="user_input"
+            required
+          />
+          <div>Student/Staff Number:</div>
+          <input
+            type="text"
+            name="studentNumber"
+            id="studentNumber"
+            class="user_input"
+            required
+          />
+          <div class="btn_container">
+            <button type="submit" id="savebutton" class="form_btn">
+              Save and Fill
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="vertical_separator"></div>
+      <div class="right_pannel">
+        <div class="tab">
+          <button class="tablinks" id="b-active">B-Active</button>
+          <button class="tablinks" id="cse-active">CSE-Active</button>
+        </div>
+        <div id="tabcontent" style="display: none;">
+          <select id="dateSelector"></select>
+          <div id="timeSlots"></div>
+        </div>
+        <div id="loader_container">
+          <div class="loader" id="loading"/>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

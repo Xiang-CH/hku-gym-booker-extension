@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "HKU Gym Booker",
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "version": "0.3",
+  "author": "CHEN Xiang",
+  "description": "Automatically fill gym booking form + notify on gym availability.",
+  "permissions": [
+    "notifications",
+    "tabs",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://fcbooking.cse.hku.hk/Form/SignUpPs*"
+      ],
+      "js": [
+        "fillForm.js"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
