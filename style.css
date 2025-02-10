@@ -66,6 +66,7 @@ h3 {
   flex-direction: column;
   width: 13rem;
   padding: 5px 4px;
+  justify-content: space-between;
 }
 
 /* Style the tab */
@@ -153,6 +154,15 @@ h3 {
 
 .cancelledBtn:hover {
   background-color: rgba(202, 202, 202, 0.58) !important;
+}
+
+.feedback{
+  display: flex;
+  gap: 0.2rem;
+  justify-content: end;
+  align-items: center;
+  color: #3a3a3a;
+  margin-bottom: 4px;
 }
 
 /* HTML: <div class="loader"></div> */

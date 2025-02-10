@@ -13,6 +13,10 @@ function enableSaveButton() {
 window.addEventListener("DOMContentLoaded", async function () {
   console.log("DOM is ready");
 
+  document.getElementsByClassName("feedback")[0].addEventListener("click", function () {
+    chrome.tabs.create({ url: "https://github.com/Xiang-CH/hku-gym-booker-extension/issues" });
+  });
+
   chrome.storage.sync.get("user_data", function (data) {
     if (!data) {
       location.href = chrome.runtime.getURL("index.html");
