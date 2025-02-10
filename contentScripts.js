@@ -23,7 +23,8 @@ window.addEventListener("DOMContentLoaded", async function () {
       const user_data = data.user_data;
       document.getElementById("name").value = user_data.name;
       document.getElementById("email").value = user_data.email;
-      document.getElementById("studentNumber").value = user_data.studentNumber;
+      document.getElementById("studentNumber").value =
+        user_data.studentNumber;
       disableSaveButton();
     }
   });
@@ -79,7 +80,6 @@ window.addEventListener("DOMContentLoaded", async function () {
     });
 });
 
-
 function openTab(evt, tabName, state) {
   console.log("Tab clicked", evt, tabName);
   state.currentTab = tabName;
@@ -88,7 +88,7 @@ function openTab(evt, tabName, state) {
   const dateSelector = document.getElementById("dateSelector");
   dateSelector.innerHTML = "";
   Object.keys(events).forEach(function (key) {
-    console.log(events[key]);
+    console.log(key, events[key]);
     dateSelector.innerHTML += `<option value="${key}">${key}</option>`;
   });
 
@@ -103,7 +103,7 @@ function openTab(evt, tabName, state) {
 
 async function showTimeSlots(date, state) {
   events = state.getEvents();
-  nofityList = (await chrome.storage.local.get("notify")).notify;
+  nofityList = (await chrome.storage.local.get("notify")).notify || [];
   console.log("Notify list", nofityList);
 
   // console.log("Date selected", date);
@@ -117,14 +117,13 @@ async function showTimeSlots(date, state) {
   timeSlots.forEach(function (slot) {
     timeSlotContainer.innerHTML += `<div class="timeslot">
       <p>${slot.time_slot} (${slot.available}/${slot.total})</p>
-      ${
-        slot.available > 0
-          ? `<button href="${slot.link}" class="bookBtn">Book</button>`
-          : slot.cancelled
+      ${slot.available > 0
+        ? `<button href="${slot.link}" class="bookBtn">Book</button>`
+        : slot.cancelled
           ? `<button class="cancelledBtn">Cancelled</button>`
           : nofityList.includes(slot.link)
-          ? `<button href="${slot.link}" class="nofityBtn">Checking</button>`
-          : `<button href="${slot.link}" class="nofityBtn">Notify</button>`
+            ? `<button href="${slot.link}" class="nofityBtn">Checking</button>`
+            : `<button href="${slot.link}" class="nofityBtn">Notify</button>`
       } 
     </div>
     `;
@@ -143,12 +142,15 @@ async function showTimeSlots(date, state) {
   for (let i = 0; i < notifyBtns.length; i++) {
     notifyBtns[i].addEventListener("click", function (e) {
       const path = e.target.getAttribute("href");
-      chrome.runtime.sendMessage({ type: "notify",  link: path}, function (response) {
-        console.log(response);
-        if (response.success) {
-          e.target.innerText = "Checking";
+      chrome.runtime.sendMessage(
+        { type: "notify", link: path },
+        function (response) {
+          console.log(response);
+          if (response.success) {
+            e.target.innerText = "Checking";
+          }
         }
-      })
+      );
     });
   }
 }
@@ -156,13 +158,22 @@ async function showTimeSlots(date, state) {
 // Constants
 const LOCATIONS = {
   CSE: {
-    id: "c10001Content",
+    id: "10001",
+    htmlId: "c10001Content",
     key: "cse-active",
   },
   B: {
-    id: "c10002Content",
+    id: "10002",
+    htmlId: "c10002Content",
     key: "b-active",
   },
+};
+
+const HourIdEncoding = {
+  "1700-1830": "10140",
+  "1845-2015": "10141",
+  "2030-2200": "10142",
+  "1715-1845": "10124",
 };
 
 const TARGET_URL = "https://fcbooking.cse.hku.hk/";
@@ -201,7 +212,9 @@ class SessionParser {
     }
 
     if (text.includes("/")) {
-      const [available, total] = text.split("/").map((num) => parseInt(num));
+      const [available, total] = text
+        .split("/")
+        .map((num) => parseInt(num));
       return { available: available, total: total, link };
     }
 
@@ -221,14 +234,23 @@ class BookingDataExtractor {
   constructor() {
     this.gymPlace = [];
     this.dayFromToday = -1;
+    this.CenterId = null;
   }
 
-  processLine(line, link = null) {
+  processLine(line) {
     line = line.trim();
 
     if (SessionParser.isDateHeader(line)) {
       this.dayFromToday++;
-      this.gymPlace.push({ date: line, id: this.dayFromToday });
+      const dateComponents = line.split(" ");
+      const date = dateComponents[0].split("/").reverse().join("/");
+      const weekDay = dateComponents[1]
+
+      this.gymPlace.push({
+        date: date + " " + weekDay,
+        id: this.dayFromToday,
+        date_encoding: encodeURIComponent(date),
+      });
       return;
     }
 
@@ -236,32 +258,40 @@ class BookingDataExtractor {
       if (!this.gymPlace[this.dayFromToday].sessions) {
         this.gymPlace[this.dayFromToday].sessions = [];
       }
-      this.gymPlace[this.dayFromToday].sessions.push({ time_slot: line });
+      this.gymPlace[this.dayFromToday].sessions.push({
+        time_slot: line,
+        hour_id: HourIdEncoding[line],
+        link: `/Form/SignUpPs?CenterID=${this.CenterId}&Date=${this.gymPlace[this.dayFromToday].date_encoding
+        }&HourID=${HourIdEncoding[line]}`
+      });
       return;
     }
 
+    if (this.dayFromToday < 0 || !this.gymPlace[this.dayFromToday].sessions) {
+      return;
+    }
+
+    // console.log(this.gymPlace[this.dayFromToday]);
+    const currentSessionId =
+      this.gymPlace[this.dayFromToday].sessions.length - 1;
+    const link = this.gymPlace[this.dayFromToday].sessions[currentSessionId].link;
+    // console.log(this.gymPlace[this.dayFromToday].date, link, this.gymPlace[this.dayFromToday].sessions[currentSessionId]);
     const availability = SessionParser.parseAvailability(line, link);
     if (availability) {
-      console.log("Availability", line);
+      // console.log("Availability", line);
       const currentSession =
-        this.gymPlace[this.dayFromToday].sessions[
-          this.gymPlace[this.dayFromToday].sessions.length - 1
-        ];
+        this.gymPlace[this.dayFromToday].sessions[currentSessionId];
       Object.assign(currentSession, availability);
     }
   }
 
-  extract(lines, links) {
+  extract(CenterId, lines) {
     this.gymPlace = [];
     this.dayFromToday = -1;
+    this.CenterId = CenterId;
 
     lines.forEach((line) => {
-      const link =
-        links.length > 0 ? links[links.length - 1].getAttribute("href") : null;
-      this.processLine(line, link);
-      if (SessionParser.parseAvailability(line)) {
-        links.pop();
-      }
+      this.processLine(line);
     });
 
     return this.gymPlace;
@@ -290,7 +320,6 @@ class BookingScraper {
     const content = doc.getElementById(locationId);
     return {
       lines: content.textContent.split("\n"),
-      links: Array.from(content.querySelectorAll("a")),
     };
   }
 
@@ -299,11 +328,19 @@ class BookingScraper {
       const doc = await this.fetchAndParse(TARGET_URL);
 
       for (const location of Object.values(LOCATIONS)) {
-        const { lines, links } = this.getContentData(doc, location.id);
-        const data = this.extractor.extract(lines, [...links].reverse());
+        const { lines } = this.getContentData(doc, location.htmlId);
+        // console.log("scrape", lines, links);
+        const data = this.extractor.extract(
+          location.id,
+          lines,
+        );
 
         for (const dayEntry of data) {
-          this.state.setEvents(location.key, dayEntry.date, dayEntry.sessions);
+          this.state.setEvents(
+            location.key,
+            dayEntry.date,
+            dayEntry.sessions
+          );
         }
       }
 

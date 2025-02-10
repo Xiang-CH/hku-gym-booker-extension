@@ -53,7 +53,7 @@ chrome.runtime.onMessage.addListener(
 
                     notify.push(request.link);
                     await chrome.storage.local.set({"notify": notify });
-                    console.log("Notify list updated!");
+                    console.log("Notify list updated!", notify);
                     sendResponse({success: true, message: "Notify list updated!"});
                     checkWebsite();
                 } catch (error) {

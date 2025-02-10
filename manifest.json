@@ -6,9 +6,9 @@
     "48": "logo.png",
     "128": "logo.png"
   },
-  "version": "0.3",
+  "version": "0.4",
   "author": "CHEN Xiang",
-  "description": "Automatically fill gym booking form + notify on gym availability.",
+  "description": "Automatically fill HKU gym booking form + notify when session available",
   "permissions": [
     "notifications",
     "tabs",
