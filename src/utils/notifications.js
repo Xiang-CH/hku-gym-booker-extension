@@ -9,7 +9,7 @@ export function notifyAvailableSession(url) {
     url,
     {
       type: "basic",
-      iconUrl: "../../logo.png",
+      iconUrl: "../../icon/icon128.png",
       title: "Gym Session Available!",
       message: "Click here to book the session!",
       requireInteraction: true,

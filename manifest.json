@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "HKU Gym Booker",
   "icons": {
-    "16": "logo.png",
-    "48": "logo.png",
-    "128": "logo.png"
+    "16": "icon/icon16.png",
+    "32": "icon/icon32.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
   },
-  "version": "0.5",
+  "version": "1.0",
   "author": "CHEN Xiang",
   "description": "Automatically fill HKU gym booking form + notify when session available",
   "permissions": [
