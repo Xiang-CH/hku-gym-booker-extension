@@ -57,7 +57,7 @@ export class SessionsView {
    */
   hideUI() {
     this.tabContent.style.display = "none";
-    this.loader.style.display = "block";
+    this.loader.style.display = "flex";
   }
 
   /**
