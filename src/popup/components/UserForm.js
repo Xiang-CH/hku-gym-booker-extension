@@ -57,28 +57,7 @@ export class UserForm {
     
     chrome.storage.sync.set({ user_data: formEntries }, () => {
       this.disableSaveButton();
-      this.sendFillMessage();
     });
-  }
-
-  /**
-   * Send a message to fill the form on the active tab
-   */
-  sendFillMessage() {
-    chrome.tabs.query(
-      { active: true, currentWindow: true },
-      (tabs) => {
-        if (!tabs || !tabs[0] || !tabs[0].id) return;
-        
-        chrome.tabs.sendMessage(
-          tabs[0].id,
-          { action: "fill" },
-          (response) => {
-            // Handle response if needed
-          }
-        );
-      }
-    );
   }
 
   /**
@@ -94,7 +73,7 @@ export class UserForm {
    */
   enableSaveButton() {
     this.saveButton.disabled = false;
-    this.saveButton.innerText = "Save and Fill";
+    this.saveButton.innerText = "📥 Save and Fill";
   }
 }
 

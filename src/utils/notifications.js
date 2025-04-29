@@ -26,7 +26,7 @@ export function notifyAvailableSession(url) {
 export function setupNotificationClickHandler() {
   chrome.notifications.onClicked.addListener(function (notificationId) {
     const link = "https://fcbooking.cse.hku.hk" + notificationId;
-    chrome.tabs.create({ url: link });
+    window.open(link, "_blank");
     chrome.notifications.clear(notificationId);
   });
 }

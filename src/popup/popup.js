@@ -4,14 +4,12 @@ import { BookingState } from './models/BookingModel.js';
 import { BookingScraper } from './services/DataFetcher.js';
 import { UserForm } from './components/UserForm.js';
 import { SessionsView } from './components/SessionsView.js';
-import { FeedbackLink } from './components/Feedback.js';
 
 /**
  * Initialize the popup UI when the DOM is loaded
  */
 async function initializePopup() {
   // Initialize components
-  const feedbackLink = new FeedbackLink();
   const userForm = new UserForm();
   
   // Initialize booking state and services

@@ -106,7 +106,6 @@ export class SessionsView {
     });
     
     // Add event listeners for buttons
-    this.addBookButtonListeners();
     this.addNotifyButtonListeners();
   }
 
@@ -120,7 +119,7 @@ export class SessionsView {
     return `<div class="timeslot">
       <p>${slot.time_slot} (${slot.available}/${slot.total})</p>
       ${slot.available > 0
-        ? `<button href="${slot.link}" class="bookBtn">Book</button>`
+        ? `<a href="https://fcbooking.cse.hku.hk${slot.link}" target="_blank"><button href="${slot.link}" class="bookBtn">Book</button></a>`
         : slot.cancelled
           ? `<button class="cancelledBtn">Cancelled</button>`
           : notifyList.includes(slot.link)
@@ -128,19 +127,6 @@ export class SessionsView {
             : `<button href="${slot.link}" class="nofityBtn">Notify</button>`
       } 
     </div>`;
-  }
-
-  /**
-   * Add event listeners to book buttons
-   */
-  addBookButtonListeners() {
-    const bookBtns = document.getElementsByClassName('bookBtn');
-    for (let i = 0; i < bookBtns.length; i++) {
-      bookBtns[i].addEventListener('click', (e) => {
-        const path = e.target.getAttribute('href');
-        chrome.tabs.create({ url: 'https://fcbooking.cse.hku.hk' + path });
-      });
-    }
   }
 
   /**
