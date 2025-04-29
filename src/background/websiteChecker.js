@@ -44,15 +44,15 @@ class WebsiteChecker {
     
     try {
       // Fetch the website content
-      // const response = await fetch(TARGET_URL);
-      // const html = await response.text();
-      const html = `<div><a class="text-default" href="/Form/SignUpPs?CenterID=10002&Date=2025%2F04%2F28&HourID=10140">
-                                                <div class="row py-2 list-hover">
-                                                    <div class="col text-center">1845-2015</div>
-                                                        <div class="col text-center">44/80</div>
-                                                </div>
-                                            </a></div>`
-                                              
+      const response = await fetch(TARGET_URL);
+      const html = await response.text();
+      // const html = `<a class="text-default" href="/Form/SignUpPs?CenterID=10002&amp;Date=2025%2F04%2F29&amp;HourID=10141">
+      //       <div class="row py-2 list-hover">
+      //       <div class="col text-center">2030-2200</div>
+      //           <div class="col text-center">2/80</div>
+      //   </div>
+      // </a>`
+                                                  
 
       // Check each link in the notification list
       for (const link of [...this.notificationState.notifyList]) {
@@ -69,23 +69,26 @@ class WebsiteChecker {
           // Skip checking if date is before today
           if (linkDate < today) {
             await this.notificationState.removeLink(link);
-          }
-        } else {
-
-          const matches = matchHtml(html, link);
-          console.log(`Checking ${link}: ${matches}`);
-          
-          if (matches) {
-            const [available, total] = matches.split("/");
-            if (parseInt(available) > 0) {
-              // Notify the user
-              notifyAvailableSession(link);
-              
-              // Remove from the notification list
-              await this.notificationState.removeLink(link);
+            if (this.notificationState.notifyList.length === 0) {
+              this.isChecking = false;
+              return;
             }
-          } 
-        }
+          }
+        } 
+        console.log(html)
+        const matches = matchHtml(html, link);
+        console.log(`Checking ${link}: ${matches}`);
+        
+        if (matches) {
+          const [available, total] = matches.split("/");
+          if (parseInt(available) > 0) {
+            // Notify the user
+            notifyAvailableSession(link);
+            
+            // Remove from the notification list
+            await this.notificationState.removeLink(link);
+          }
+        } 
         
         // If the notification list is now empty, stop checking
         if (this.notificationState.notifyList.length === 0) {

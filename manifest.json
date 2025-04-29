@@ -12,6 +12,7 @@
   "description": "Automatically fill HKU gym booking form + notify when session available",
   "permissions": [
     "notifications",
+    "tabs",
     "storage"
   ],
   "action": {
