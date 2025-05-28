@@ -4,20 +4,16 @@ import { setupNotificationClickHandler } from './utils/notifications.js';
 import { setupMessageListener } from './background/messageHandler.js';
 import { websiteChecker } from './background/websiteChecker.js';
 
+// Always register listeners and start checker on service worker startup
+setupNotificationClickHandler();
+setupMessageListener();
+websiteChecker.start();
+
 /**
  * Initialize the extension
  */
 function init() {
   console.log("Extension installed!");
-  
-  // Setup notification click handler
-  setupNotificationClickHandler();
-  
-  // Setup message listener
-  setupMessageListener();
-  
-  // Start website checker
-  websiteChecker.start();
 }
 
 // Run initialization when extension is installed or updated
@@ -28,4 +24,4 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     init
   };
-} 
+}

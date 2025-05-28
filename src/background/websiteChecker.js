@@ -75,7 +75,7 @@ class WebsiteChecker {
             }
           }
         } 
-        console.log(html)
+        // console.log(html)
         const matches = matchHtml(html, link);
         console.log(`Checking ${link}: ${matches}`);
         
