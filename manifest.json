@@ -7,7 +7,7 @@
     "48": "icon/icon48.png",
     "128": "icon/icon128.png"
   },
-  "version": "1.1",
+  "version": "1.2",
   "author": "CHEN Xiang",
   "description": "Automatically fill HKU gym booking form + notify when session available",
   "permissions": [
@@ -28,7 +28,12 @@
     }
   ],
   "background": {
-    "service_worker": "src/background.js",
+    "scripts": ["src/background.js"],
     "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "chen.xiang.bill@gmail.com"
+    }
   }
 }
