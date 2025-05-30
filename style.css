@@ -23,6 +23,10 @@ h3 {
   padding-left: 2px;
 }
 
+#user_data div {
+  font-size: 0.85rem;
+}
+
 .form_btn {
   width: 80px;
 }
@@ -65,10 +69,10 @@ h3 {
 .right_pannel {
   display: flex;
   flex-direction: column;
-  width: 13rem;
+  min-width: 14rem;
   padding: 5px 4px;
   justify-content: space-between;
-  min-height: 15rem;
+  min-height: 15.5rem;
 }
 
 /* Style the tab */
@@ -117,7 +121,8 @@ h3 {
   border: 1px solid #ccc;
   padding: 2px 7px;
   margin  auto;
-  min-width: 10rem;
+  /* min-width: 10rem; */
+  max-width: 10.5rem;
 }
 
 .timeslot {
@@ -126,6 +131,11 @@ h3 {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+}
+
+.timeslot p{
+  font-size: 0.8rem;
+  min-width: 8rem;
 }
 
 .timeslot button {
@@ -160,11 +170,18 @@ h3 {
 
 .feedback{
   display: flex;
-  gap: 0.2rem;
+  font-size: 0.8rem;
   justify-content: end;
   align-items: center;
+  margin-bottom: 2px;
+}
+
+.feedback a {
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+  text-decoration: none;
   color: #3a3a3a;
-  margin-bottom: 4px;
 }
 
 

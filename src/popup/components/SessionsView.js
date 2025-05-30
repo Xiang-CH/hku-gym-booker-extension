@@ -70,9 +70,16 @@ export class SessionsView {
     const events = this.state.getEvents();
     
     // Clear and populate date selector
-    this.dateSelector.innerHTML = "";
+    // Clear date selector
+    while (this.dateSelector.firstChild) {
+      this.dateSelector.removeChild(this.dateSelector.firstChild);
+    }
+    // Populate date selector safely
     Object.keys(events).forEach((key) => {
-      this.dateSelector.innerHTML += `<option value="${key}">${key}</option>`;
+      const option = document.createElement('option');
+      option.value = key;
+      option.textContent = key;
+      this.dateSelector.appendChild(option);
     });
     
     // Update active tab styling
@@ -98,42 +105,51 @@ export class SessionsView {
 
     const notifyList = storageData.notify || [];
     const timeSlots = events[date];
-    this.timeSlots.innerHTML = '';
-    
-    // Create and display each time slot
+    // Clear existing slots
+    while (this.timeSlots.firstChild) {
+      this.timeSlots.removeChild(this.timeSlots.firstChild);
+    }
+    // Create and display each time slot safely
     timeSlots.forEach((slot) => {
-      this.timeSlots.innerHTML += this.createTimeSlotHTML(slot, notifyList);
+      const slotDiv = document.createElement('div');
+      slotDiv.className = 'timeslot';
+      // Slot info
+      const info = document.createElement('p');
+      info.textContent = `${slot.time_slot} (${slot.available}/${slot.total})`;
+      slotDiv.appendChild(info);
+      // Action button or link
+      if (slot.available > 0) {
+        const link = document.createElement('a');
+        link.href = `https://fcbooking.cse.hku.hk${slot.link}`;
+        link.target = '_blank';
+        const bookBtn = document.createElement('button');
+        bookBtn.className = 'bookBtn';
+        bookBtn.setAttribute('data-link', slot.link);
+        bookBtn.textContent = 'Book';
+        link.appendChild(bookBtn);
+        slotDiv.appendChild(link);
+      } else if (slot.cancelled) {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancelledBtn';
+        cancelBtn.textContent = 'Cancelled';
+        slotDiv.appendChild(cancelBtn);
+      } else {
+        const notifyBtn = document.createElement('button');
+        notifyBtn.className = 'notifyBtn';
+        notifyBtn.setAttribute('data-link', slot.link);
+        notifyBtn.textContent = notifyList.includes(slot.link) ? 'Checking' : 'Notify';
+        slotDiv.appendChild(notifyBtn);
+      }
+      this.timeSlots.appendChild(slotDiv);
     });
-    
-    // Add event listeners for buttons
     this.addNotifyButtonListeners();
-  }
-
-  /**
-   * Create HTML for a time slot
-   * @param {Object} slot - The time slot data
-   * @param {Array} notifyList - List of slots being watched
-   * @returns {string} - HTML for the time slot
-   */
-  createTimeSlotHTML(slot, notifyList) {
-    return `<div class="timeslot">
-      <p>${slot.time_slot} (${slot.available}/${slot.total})</p>
-      ${slot.available > 0
-        ? `<a href="https://fcbooking.cse.hku.hk${slot.link}" target="_blank"><button href="${slot.link}" class="bookBtn">Book</button></a>`
-        : slot.cancelled
-          ? `<button class="cancelledBtn">Cancelled</button>`
-          : notifyList.includes(slot.link)
-            ? `<button href="${slot.link}" class="nofityBtn">Checking</button>`
-            : `<button href="${slot.link}" class="nofityBtn">Notify</button>`
-      } 
-    </div>`;
   }
 
   /**
    * Add event listeners to notify buttons
    */
   addNotifyButtonListeners() {
-    const notifyBtns = document.getElementsByClassName('nofityBtn');
+    const notifyBtns = document.getElementsByClassName('notifyBtn');
     for (let i = 0; i < notifyBtns.length; i++) {
       notifyBtns[i].addEventListener('click', (e) => {
         const path = e.target.getAttribute('href');
@@ -169,4 +185,4 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     SessionsView
   };
-} 
+}
