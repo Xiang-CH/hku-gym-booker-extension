@@ -28,12 +28,13 @@
     }
   ],
   "background": {
+    "service_worker": "src/background.js",
     "scripts": ["src/background.js"],
     "type": "module"
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "chen.xiang.bill@gmail.com"
+      "id": "chen.xiang.bill@gmail.com/hku-gym-booker-extension"
     }
   }
 }
