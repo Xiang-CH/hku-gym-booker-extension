@@ -2,8 +2,8 @@
 
 A Chrome/Firefox extension to automatically fill HKU gym booking forms and notify when sessions become available.
 
-![Chrome Extention Store](https://chromewebstore.google.com/detail/hku-gym-booker/bodpgifcfhfofmfcbnhdlhplehppfooh),
-![Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/hku-gym-booker/)
+[Chrome Extention Store](https://chromewebstore.google.com/detail/hku-gym-booker/bodpgifcfhfofmfcbnhdlhplehppfooh),
+[Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/hku-gym-booker/)
 
 <img width="1125" alt="Screenshot 2025-01-31 at 12 17 46 AM" src="https://github.com/user-attachments/assets/92ba3e0a-9ea7-494c-abae-e47ef545f3a2" />
 
