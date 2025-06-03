@@ -14,7 +14,6 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-        tags: true
 
     - name: Read version from manifest.json
       id: version
@@ -22,7 +21,7 @@ jobs:
         VERSION=$(jq -r '.version' manifest.json)
         echo "VERSION_TAG=v$VERSION" >> $GITHUB_ENV
         echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-        
+
     - name: Get latest tag
       id: latest_tag
       run: |
