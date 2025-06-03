@@ -1,7 +1,9 @@
 name: Zip and Upload Release
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   zip-and-release:
@@ -18,11 +20,36 @@ jobs:
         echo "VERSION_TAG=v$VERSION" >> $GITHUB_ENV
         echo "::set-output name=tag::v$VERSION"
 
+    - name: Fetch all tags
+      run: git fetch --tags
+
+    - name: Get latest tag
+      id: latest_tag
+      run: |
+        LATEST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0")
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+        echo "::set-output name=tag::$LATEST_TAG"
+
+    - name: Check if version updated
+      id: check_version
+      run: |
+        echo "Current version: $VERSION_TAG"
+        echo "Latest tag: $LATEST_TAG"
+        if [ "$VERSION_TAG" = "$LATEST_TAG" ]; then
+          echo "Version not updated, skipping release."
+          echo "updated=false" >> $GITHUB_OUTPUT
+        else
+          echo "Version updated, proceeding with release."
+          echo "updated=true" >> $GITHUB_OUTPUT
+        fi
+
     - name: Create ZIP archive
+      if: steps.check_version.outputs.updated == 'true'
       run: |
         zip -r hku-gym-booker.zip . -x "*.git*" -x ".*" -x "assets/*"
 
     - name: Create GitHub Release
+      if: steps.check_version.outputs.updated == 'true'
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.version.outputs.tag }}
