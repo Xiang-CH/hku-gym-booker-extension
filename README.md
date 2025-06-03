@@ -45,7 +45,6 @@ The extension is organized into a modular structure for better maintainability:
 │       ├── htmlParser.js        # HTML parsing utilities
 │       └── notifications.js     # Notification utilities
 ├── index.html                   # Popup UI
-├── logo.png                     # Extension icon
 ├── manifest.json                # Extension configuration
 ├── style.css                    # CSS styling
 └── package.json                 # Development dependencies
