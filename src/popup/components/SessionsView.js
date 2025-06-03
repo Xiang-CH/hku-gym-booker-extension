@@ -152,7 +152,7 @@ export class SessionsView {
     const notifyBtns = document.getElementsByClassName('notifyBtn');
     for (let i = 0; i < notifyBtns.length; i++) {
       notifyBtns[i].addEventListener('click', (e) => {
-        const path = e.target.getAttribute('href');
+        const path = e.target.getAttribute('data-link');
         chrome.runtime.sendMessage(
           { type: 'notify', link: path },
           (response) => {
