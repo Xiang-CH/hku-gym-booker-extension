@@ -5,19 +5,34 @@
  * @param {string} url - The booking URL to open when clicked
  */
 export function notifyAvailableSession(url) {
-  chrome.notifications.create(
-    url,
-    {
-      type: "basic",
-      iconUrl: "../../icon/icon128.png",
-      title: "Gym Session Available!",
-      message: "Click here to book the session!",
-      requireInteraction: true,
-    },
-    function () {
-      console.log("Notification created for:", url);
-    }
-  );
+  try{
+    chrome.notifications.create(
+      url,
+      {
+        type: "basic",
+        iconUrl: "../../icon/icon128.png",
+        title: "Gym Session Available!",
+        message: "Click here to book the session!",
+        requireInteraction: true,
+      },
+      function () {
+        console.log("Notification created for:", url);
+      }
+    );
+  } catch (error) {
+    chrome.notifications.create(
+      url,
+      {
+        type: "basic",
+        iconUrl: "../../icon/icon128.png",
+        title: "Gym Session Available!",
+        message: "Click here to book the session!",
+      },
+      function () {
+        console.log("Notification created for:", url);
+      }
+    );
+  }
 }
 
 /**
